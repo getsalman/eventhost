@@ -22,6 +22,7 @@ const HomePage = ({ history }) => {
             />
             Events Festival
           </Header>
+
           <Button onClick={() => history.push("/events")} size="huge" inverted>
             Get started
             <Icon name="right arrow" inverted />

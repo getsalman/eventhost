@@ -23,6 +23,7 @@ const NavBar = ({ history }) => {
           Events Fest
         </Menu.Item>
         <Menu.Item as={NavLink} to="/events" name="Events" />
+        <Menu.Item as={NavLink} to="/test" name="Test" />
         {authenticate && <Menu.Item as={NavLink} to="/people" name="People" />}
         {authenticate && (
           <Menu.Item>

@@ -1,32 +1,52 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
+import { useSelector, useDispatch } from "react-redux";
+import cuid from "cuid";
+import { createEvent, updateEvent } from "../eventActions";
 
 const EventForm = ({
   handleFormCancel,
-  createEvent,
+  // createEvent,
   selectedEvent,
-  updatedEvent,
+  // updatedEvent,
+  history,
+  match,
 }) => {
-  const [event, setEvent] = useState({
-    title: "",
-    date: "",
-    city: "",
-    venue: "",
-    hostedBy: "",
+  const eventt = useSelector((state) => {
+    const eventId = match.params.id;
+    let eventt = {
+      title: "",
+      date: "",
+      city: "",
+      venue: "",
+      hostedBy: "",
+    };
+
+    if (eventId && state.events.length > 0) {
+      eventt = state.events.filter((event) => event.id === eventId)[0];
+    }
+
+    return eventt;
   });
 
-  useEffect(() => {
-    if (selectedEvent !== null) {
-      setEvent(selectedEvent);
-    }
-  }, [selectedEvent]);
+  const dispatch = useDispatch();
+
+  const eventData = Object.assign({}, eventt);
+  const [event, setEvent] = useState(eventData);
 
   const onFormSubmit = (evt) => {
     evt.preventDefault();
     if (event.id) {
-      updatedEvent(event);
+      dispatch(updateEvent(event));
+      history.goBack();
     } else {
-      createEvent(event);
+      const newEvent = {
+        ...event,
+        id: cuid(),
+        hostPhotoURL: "/assets/user.png",
+      };
+      dispatch(createEvent(newEvent));
+      history.push("/events");
     }
   };
 
@@ -93,7 +113,7 @@ const EventForm = ({
           <Button positive type="submit">
             Submit
           </Button>
-          <Button onClick={handleFormCancel} type="button">
+          <Button onClick={history.goBack} type="button">
             Cancel
           </Button>
         </Form>
